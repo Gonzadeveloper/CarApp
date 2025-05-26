@@ -1,0 +1,83 @@
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loginUser, refreshTokenRequest } from '../api/authApi';
+import api from '../api/apiInstance'
+
+const AuthContext = createContext({
+  isLoggedIn: false,
+  user: null,
+  login: () => {},
+  logout: () => {},
+});
+
+export const AuthProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        let accessToken = await AsyncStorage.getItem('accessToken');
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+
+        // Si no hay accessToken pero sí refreshToken, intentamos renovarlo
+        if (!accessToken && refreshToken) {
+          const res = await refreshTokenRequest(refreshToken);
+          accessToken = res.accessToken;
+          await AsyncStorage.setItem('accessToken', accessToken);
+        }
+        
+        // Si tenemos un accessToken válido, usamos la API para traer el user
+        if (accessToken) {
+          const response = await api.get('/users/me'); // tu instancia de axios maneja el token
+          setUser(response.data);
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
+      } catch (err) {
+        console.log('Falló la autenticación:', err);
+        await AsyncStorage.clear();
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    };
+
+    initializeAuth();
+  }, []);
+
+
+  const login = async (email, password) => {
+    try {
+      const { data } = await loginUser(email, password);
+      await AsyncStorage.setItem('accessToken', data.accessToken);
+      await AsyncStorage.setItem('refreshToken', data.refreshToken);
+      setUser({
+      id: data.id,
+      name: data.name,
+      lastName: data.lastName,
+      email: data.email,
+      dni: data.dni,
+    });
+      setIsLoggedIn(true);
+    } catch (err) {
+      console.log('aca estamso')
+      throw err;
+    }
+  };
+
+  const logout = async () => {
+    await AsyncStorage.clear();
+    setIsLoggedIn(false);
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, user }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
