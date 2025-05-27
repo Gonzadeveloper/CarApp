@@ -8,16 +8,16 @@ import {
   Keyboard,
   Alert,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { updateUser } from '../api/userApi';
-import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 
 export default function SettingsScreen() {
-  const navigation = useNavigation();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const userId = user?.id;
+  const [editingField, setEditingField] = useState(null);
   const [userData, setUserData] = useState({
     name: '',
     lastName: '',
@@ -26,20 +26,18 @@ export default function SettingsScreen() {
     dni:'',
   });
   
-  const [editingField, setEditingField] = useState(null);
-
   useEffect(() => {
-    if (user) {
+    if (user && !loading) {
       setUserData({
-        name: user.name || '',
-        lastName: user.lastName || '',
-        email: user.email || '',
-        dni: user.dni || '',
-        City: user.City?.name || '',
+        name: user.data.name || '',
+        lastName: user.data.lastName || '',
+        email: user.data.email || '',
+        dni: user.data.dni || '',
+        City: user.data.City?.name || '',
       });
     }
-  }, [user]);
-
+  }, [user, loading]);
+  
   const handleFieldEdit = (field) => {
     setEditingField(field);
   };
@@ -59,14 +57,19 @@ export default function SettingsScreen() {
     Keyboard.dismiss();
   };
 
+    if (loading || !user) {
+    return (
+      <ScreenWrapper>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007bff" />
+          <Text>Cargando usuario...</Text>
+        </View>
+      </ScreenWrapper>
+    );
+  }
+
   return (
     <ScreenWrapper>
-      {/* Header con botón de volver */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.closeButton}>❌</Text>
-        </TouchableOpacity>
-      </View>
 
       <Text style={styles.screenTitle}>Settings</Text>
 

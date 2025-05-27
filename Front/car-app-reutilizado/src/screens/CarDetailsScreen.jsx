@@ -60,7 +60,14 @@ const CarDetails = () => {
 
       <ScrollView contentContainerStyle={styles.container}>
         <Image
-          source={{ uri: 'https://w7.pngwing.com/pngs/756/875/png-transparent-fiat-automobiles-car-fiat-strada-fiat-argo-fiat-mobi-car-compact-car-sedan-car-thumbnail.png' }}
+            source={{
+            uri:
+              brandName === 'Toyota'
+                ? 'https://i.pinimg.com/736x/77/52/32/775232084fc9143b82ab9a2bf25877f1.jpg'
+                : brandName === 'Volkswagen'
+                ? 'https://vw-digital-cdn-global.itd.vw.com.br/assets/vw-newsroon-cdn-ar-ps/notas/VW%20Gol%20(3).jpg'
+                : 'https://img.freepik.com/psd-premium/coche-ciudad-blanca-sobre-fondo-transparente-ilustracion-renderizado-3d_494250-61995.jpg', // default
+          }}
           style={styles.image}
           resizeMode="contain"
         />

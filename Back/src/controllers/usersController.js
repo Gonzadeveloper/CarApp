@@ -9,7 +9,7 @@ const {
 } = require('../utils/responseHelpers');
 
 const generateAccessToken = (userId) =>
-  jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '15m' });
+  jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '2m' });
 
 const generateRefreshToken = (userId) =>
   jwt.sign({ id: userId }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });

@@ -13,6 +13,7 @@ const AuthContext = createContext({
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -32,15 +33,18 @@ export const AuthProvider = ({ children }) => {
           const response = await api.get('/users/me'); // tu instancia de axios maneja el token
           setUser(response.data);
           setIsLoggedIn(true);
+          setLoading(false);
         } else {
           setIsLoggedIn(false);
           setUser(null);
+          setLoading(false);
         }
       } catch (err) {
         console.log('Falló la autenticación:', err);
         await AsyncStorage.clear();
         setIsLoggedIn(false);
         setUser(null);
+        setLoading(false);
       }
     };
 
@@ -61,8 +65,8 @@ export const AuthProvider = ({ children }) => {
       dni: data.dni,
     });
       setIsLoggedIn(true);
+      setLoading(false);
     } catch (err) {
-      console.log('aca estamso')
       throw err;
     }
   };
@@ -71,10 +75,11 @@ export const AuthProvider = ({ children }) => {
     await AsyncStorage.clear();
     setIsLoggedIn(false);
     setUser(null);
+    setLoading(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, user }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, user, loading}}>
       {children}
     </AuthContext.Provider>
   );

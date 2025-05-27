@@ -14,3 +14,11 @@ export const getMyCars = async () => {
 
   return res.data;
 };
+
+export const getBrands = () => axios.get(`${API_URL}/brands`);
+
+export const getModels = () => axios.get(`${API_URL}/model`);
+
+export const getVersions = () => axios.get(`${API_URL}/versions`);
+
+export const createCar = (carData) => axios.post(`${API_URL}/cars`, carData);

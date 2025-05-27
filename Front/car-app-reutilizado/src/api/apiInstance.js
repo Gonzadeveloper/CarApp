@@ -24,7 +24,7 @@ api.interceptors.response.use(
       try {
         const refreshToken = await AsyncStorage.getItem('refreshToken');
         const res = await refreshTokenRequest(refreshToken);
-        const newAccessToken = res.accessToken;
+        const newAccessToken = res.data.accessToken;
 
         await AsyncStorage.setItem('accessToken', newAccessToken);
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
