@@ -4,14 +4,17 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { useEffect, useState } from 'react';
 import { getMyCars } from '../api/carApi';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useIsFocused  } from '@react-navigation/native';
 
 const CarDetails = () => {
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
   const [cars, setCars] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
-    const fetchCars = async () => {
+  const fetchCars = async () => {
       try {
         const res = await getMyCars();
         setCars(res.data);
@@ -20,8 +23,10 @@ const CarDetails = () => {
       }
     };
 
-    fetchCars();
-  }, []);
+    if (isFocused) {
+      fetchCars();
+    }
+  }, [isFocused]);
 
   const handleNext = () => {
     if (currentIndex < cars.length - 1) {
@@ -75,6 +80,13 @@ const CarDetails = () => {
         <Text style={styles.title}>{`${brandName} ${modelName} ${versionName}`}</Text>
         <Text style={styles.subTitle}>Año: {year} | Patente: {license_plate}</Text>
 
+         <TouchableOpacity
+           onPress={() => navigation.navigate('AddService', { carId: car.id })}
+           style={{ backgroundColor: '#2196F3', padding: 12, borderRadius: 8, marginTop: 20 }}
+         >
+           <Text style={{ color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>Agregar Service</Text>
+         </TouchableOpacity>
+
         <View style={styles.section}>
           <Text style={styles.label}>Último service:</Text>
           <Text>
@@ -88,6 +100,14 @@ const CarDetails = () => {
           <Text style={styles.label}>Próximo service:</Text>
           <Text>{new Date(next_service).toLocaleDateString()}</Text>
         </View>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddKm', { carId: car.id })}
+          style={{ backgroundColor: '#2196F3', padding: 12, borderRadius: 8, marginTop: 20 }}
+        >
+          <Text style={{ color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>Agregar KM</Text>
+        </TouchableOpacity>
+
 
         <Text style={styles.label}>Historial de Kilómetros</Text>
         {CarKms.length ? (

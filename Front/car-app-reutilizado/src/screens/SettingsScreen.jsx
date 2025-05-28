@@ -29,10 +29,10 @@ export default function SettingsScreen() {
   useEffect(() => {
     if (user && !loading) {
       setUserData({
-        name: user.data.name || '',
-        lastName: user.data.lastName || '',
-        email: user.data.email || '',
-        dni: user.data.dni || '',
+        name: user.data?.name || '',
+        lastName: user.data?.lastName || '',
+        email: user.data?.email || '',
+        dni: user.data?.dni || '',
         City: user.data.City?.name || '',
       });
     }
