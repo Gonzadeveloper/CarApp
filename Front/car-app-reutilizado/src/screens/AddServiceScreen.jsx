@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import axios from 'axios';
+import { createService } from '../api/carApi';
 
 export default function AddServiceScreen({ route, navigation }) {
   const { carId } = route.params;
@@ -20,19 +20,18 @@ export default function AddServiceScreen({ route, navigation }) {
     
     const handleSubmit = async () => {
     try {
-        await axios.post(
-    'https://6gk42kt8-3001.brs.devtunnels.ms/service',
-    {
-        car_id: carId,
-        km_at_service,
-        description,
-        year: date.toISOString().split('T')[0],
-    },
-    {
-        headers: {
-        'Content-Type': 'application/json',
-        },
-    }
+        await createService(
+      {
+          car_id: carId,
+          km_at_service,
+          description,
+          year: date.toISOString().split('T')[0],
+      },
+      {
+          headers: {
+          'Content-Type': 'application/json',
+          },
+      }
     );
       alert('Servicio agregado');
       navigation.goBack();

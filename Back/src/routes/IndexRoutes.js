@@ -19,6 +19,8 @@ const {
     deleteCity
 } = require('../controllers/citiesController');
 const {
+    getCarBySearch,
+    searchByLicensePlate,
     getMyCars,
     getAllCars,
     getCarById,
@@ -83,6 +85,8 @@ router.get('/cities/:id', getCityById);
 router.put('/cities/:id', updateCity);
 router.delete('/cities/:id', deleteCity);
 
+router.get('/cars/searchid/:id',authenticateToken, getCarBySearch)
+router.get('/cars/search', searchByLicensePlate)
 router.get('/cars/getmycar', authenticateToken, getMyCars)
 router.get('/cars', getAllCars);
 router.get('/cars/:id', getCarById);

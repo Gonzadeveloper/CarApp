@@ -4,6 +4,7 @@ const {
   errorResponse,
   notFoundResponse
 } = require('../utils/responseHelpers');
+const { Op } = require('sequelize');
 
 // Obtener todos los autos
 const getAllCars = async (req, res) => {
@@ -15,11 +16,64 @@ const getAllCars = async (req, res) => {
   }
 };
 
+const searchByLicensePlate = async (req, res) => {
+  try {
+    const { plate } = req.query;
+
+    if (!plate) {
+      return errorResponse(res, 'Se requiere un valor de patente', 'No se proporcionó la patente', 400);
+    }
+
+    const cars = await Cars.findAll({
+      where: {
+        license_plate: {
+          [Op.iLike]: `%${plate}%`
+        },
+      },
+      include: [
+        {
+          model: Versions,
+          attributes: ['name'],
+          include: [
+            {
+              model: Models,
+              attributes: ['name'],
+              include: [
+                {
+                  model: Brands,
+                  attributes: ['name']
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    const results = cars.map((car) => ({
+      id: car.id,
+      year: car.year,
+      license_plate: car.license_plate,
+      user_id: car.user_id,
+      version: car.Version?.name || null,
+      model: car.Version?.Model?.name || null,
+      brand: car.Version?.Model?.Brand?.name || null
+    }));
+
+    return successResponse(res, 'Resultados obtenidos con éxito', results);
+  } catch (error) {
+    console.error(error);
+    return errorResponse(res, 'Error al buscar autos por patente', error.message);
+  }
+};
+
+
+
 // Obtener todos mis autos
 const getMyCars = async (req, res) => {
   try {
     const userId = req.user.id; // asumimos que ya tenés un middleware que mete user en req
-
+    
     const cars = await Cars.findAll({
       where: { user_id: userId },
       attributes: ['id', 'license_plate', 'year', 'next_service'],
@@ -50,13 +104,67 @@ const getMyCars = async (req, res) => {
         }
       ]
     });
-
+    
     successResponse(res, 'Datos de los autos obtenidos', cars, 200);
   } catch (error) {
     errorResponse(res, 'Error al obtener los datos de los autos', error.message);
   }
 };
 
+const getCarBySearch = async (req, res) => {
+  try {
+    const { id } = req.params; // ID del auto
+
+    const car = await Cars.findOne({
+      where: { id }, // ✅ ya no filtramos por user_id
+      attributes: ['id', 'license_plate', 'year', 'next_service', 'user_id'],
+      include: [
+        {
+          model: Service,
+          attributes: ['description', 'km_at_service', 'createdAt']
+        },
+        {
+          model: CarKm,
+          attributes: ['km', 'createdAt']
+        },
+        {
+          model: Versions,
+          attributes: ['name'],
+          include: [
+            {
+              model: Models,
+              attributes: ['name'],
+              include: [
+                {
+                  model: Brands,
+                  attributes: ['name']
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    if (!car) return errorResponse(res, 'Auto no encontrado', null, 404);
+
+    const results = {
+      id: car.id,
+      year: car.year,
+      license_plate: car.license_plate,
+      user_id: car.user_id, // ahora se incluye correctamente
+      CarsKms: car.CarKms,
+      Services: car.Services,
+      version: car.Version?.name || null,
+      model: car.Version?.Model?.name || null,
+      brand: car.Version?.Model?.Brand?.name || null
+    };
+
+    successResponse(res, 'Datos del auto obtenidos', results, 200);
+  } catch (error) {
+    errorResponse(res, 'Error al obtener los datos del auto', error.message);
+  }
+};
 
 // Obtener auto por ID
 const getCarById = async (req, res) => {
@@ -138,6 +246,8 @@ const deleteCar = async (req, res) => {
 };
 
 module.exports = {
+  getCarBySearch,
+  searchByLicensePlate,
   getMyCars,
   getAllCars,
   getCarById,

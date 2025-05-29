@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import axios from 'axios';
+import { createKms } from '../api/carApi';
 
 const AddKmScreen = () => {
   const navigation = useNavigation();
@@ -27,7 +27,7 @@ const AddKmScreen = () => {
     };
 
     try {
-      await axios.post('https://6gk42kt8-3001.brs.devtunnels.ms/kms', payload);
+      await createKms(payload);
       Alert.alert('Éxito', 'Kilómetros agregados correctamente');
       navigation.goBack();
     } catch (error) {

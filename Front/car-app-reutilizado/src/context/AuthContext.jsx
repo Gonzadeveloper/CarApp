@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         // Si no hay accessToken pero sí refreshToken, intentamos renovarlo
         if (!accessToken && refreshToken) {
           const res = await refreshTokenRequest(refreshToken);
-          accessToken = res.accessToken;
+          accessToken = res.data.accessToken;
           await AsyncStorage.setItem('accessToken', accessToken);
         }
         

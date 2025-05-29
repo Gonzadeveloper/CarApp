@@ -97,7 +97,7 @@ export default function SettingsScreen() {
             autoFocus
           />
         ) : (
-          <Text style={styles.valueText}>{userData.name}</Text>
+          <Text style={styles.valueText}>{userData?.name}</Text>
         )}
       </TouchableOpacity>
 
@@ -114,7 +114,7 @@ export default function SettingsScreen() {
             autoFocus
           />
         ) : (
-          <Text style={styles.valueText}>{userData.lastName}</Text>
+          <Text style={styles.valueText}>{userData?.lastName}</Text>
         )}
       </TouchableOpacity>
 
@@ -131,7 +131,7 @@ export default function SettingsScreen() {
             autoFocus
           />
         ) : (
-          <Text style={styles.valueText}>{userData.dni}</Text>
+          <Text style={styles.valueText}>{userData?.dni}</Text>
         )}
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleFieldEdit('City')}>
@@ -146,7 +146,7 @@ export default function SettingsScreen() {
             autoFocus
           />
         ) : (
-          <Text style={styles.valueText}>{userData.City}</Text>
+          <Text style={styles.valueText}>{userData?.City}</Text>
         )}
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleFieldEdit('email')}>

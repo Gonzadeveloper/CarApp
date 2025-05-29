@@ -22,3 +22,7 @@ export const getModels = () => axios.get(`${API_URL}/model`);
 export const getVersions = () => axios.get(`${API_URL}/versions`);
 
 export const createCar = (carData) => axios.post(`${API_URL}/cars`, carData);
+
+export const createService = (carService) => axios.post(`${API_URL}/service`, (carService));
+
+export const createKms = (carKms) => axios.post(`${API_URL}/kms`, carKms);
