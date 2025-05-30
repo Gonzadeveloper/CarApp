@@ -30,8 +30,15 @@ export const AuthProvider = ({ children }) => {
         
         // Si tenemos un accessToken válido, usamos la API para traer el user
         if (accessToken) {
-          const response = await api.get('/users/me'); // tu instancia de axios maneja el token
-          setUser(response.data);
+        const response = await api.get('/users/me');
+        const userData = response.data.data; // <-- aquí extraés el user que está dentro de data.data
+        setUser({
+          id: userData.id,
+          name: userData.name,
+          lastName: userData.lastName,
+          email: userData.email,
+          dni: userData.dni,
+        });
           setIsLoggedIn(true);
           setLoading(false);
         } else {

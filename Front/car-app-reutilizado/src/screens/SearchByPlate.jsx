@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import { getCarsByPlate } from '../api/carApi';
 
 export default function SearchByPlate({ navigation }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
 
-  const handleSearch = async (text) => {
-    setQuery(text);
-    
-    if (text.length >= 2) {
-      try {
-          const res = await axios.get(`https://6gk42kt8-3001.brs.devtunnels.ms/cars/search?plate=${text}`);
-          setResults(res.data.data);
+    const handleSearch = async (text) => {
+        setQuery(text);
+
+        if (text.length < 2) {
+            setResults([]); 
+            return;
+        }
+
+        try {
+            const res = await getCarsByPlate(text);
+            setResults(res.data.data);
         } catch (err) {
             console.error('Error al buscar:', err);
+            setResults([]);
         }
-    } else {
-        setResults([]);
-    }
-};
+    };
 
 const handlePress = (carId) => {
   navigation.navigate('CarDetailBySearch', { carId });

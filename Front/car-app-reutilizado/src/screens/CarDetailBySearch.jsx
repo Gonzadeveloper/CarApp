@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { useRoute } from '@react-navigation/native';
-import axios from 'axios';
 import { Dimensions } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getCarByIdSearch } from '../api/carApi';
+import ScreenWrapper from '../components/ScreenWrapper'
+
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -18,15 +19,7 @@ export default function CarDetailBySearch() {
     useEffect(() => {
     const fetchCarDetails = async () => {
         try {
-        const token = await AsyncStorage.getItem('accessToken'); // o como lo tengas guardado
-        const res = await axios.get(
-            `https://6gk42kt8-3001.brs.devtunnels.ms/cars/searchid/${carId}`,
-            {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-            }
-        );
+        const res = await getCarByIdSearch(carId);  
         setCar(res.data.data);
         } catch (err) {
         console.error('Error cargando detalles del auto:', err);
@@ -50,70 +43,72 @@ export default function CarDetailBySearch() {
   const kmValues = car.km_history?.map(k => k.km) || [];
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Detalles del Auto</Text>
+    <ScreenWrapper>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Detalles del Auto</Text>
 
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Patente:</Text>
-        <Text style={styles.value}>{car.license_plate}</Text>
+        <View style={styles.detailBox}>
+          <Text style={styles.label}>Patente:</Text>
+          <Text style={styles.value}>{car.license_plate}</Text>
 
-        <Text style={styles.label}>Año:</Text>
-        <Text style={styles.value}>{car.year}</Text>
+          <Text style={styles.label}>Año:</Text>
+          <Text style={styles.value}>{car.year}</Text>
 
-        <Text style={styles.label}>Último Service:</Text>
-        <Text style={styles.value}>
-          {car.Services && car.Services.length > 0
-            ? `${car.Services.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0].description} - ${new Date(car.Services[0].createdAt).toLocaleDateString()}`
-            : 'Sin servicios registrados'}
-        </Text>
+          <Text style={styles.label}>Último Service:</Text>
+          <Text style={styles.value}>
+            {car.Services && car.Services.length > 0
+              ? `${car.Services.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0].description} - ${new Date(car.Services[0].createdAt).toLocaleDateString()}`
+              : 'Sin servicios registrados'}
+          </Text>
 
-        <Text style={styles.label}>Últimos Kms registrados:</Text>
-        <Text style={styles.value}>
-          {car.CarsKms && car.CarsKms.length > 0
-            ? `${car.CarsKms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0].km} km - ${new Date(car.CarsKms[0].createdAt).toLocaleDateString()}`
-            : 'Sin datos de kilómetros'}
-        </Text>
+          <Text style={styles.label}>Últimos Kms registrados:</Text>
+          <Text style={styles.value}>
+            {car.CarsKms && car.CarsKms.length > 0
+              ? `${car.CarsKms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0].km} km - ${new Date(car.CarsKms[0].createdAt).toLocaleDateString()}`
+              : 'Sin datos de kilómetros'}
+          </Text>
 
-        <Text style={styles.label}>Marca:</Text>
-        <Text style={styles.value}>{car.brand}</Text>
+          <Text style={styles.label}>Marca:</Text>
+          <Text style={styles.value}>{car.brand}</Text>
 
-        <Text style={styles.label}>Modelo:</Text>
-        <Text style={styles.value}>{car.model}</Text>
+          <Text style={styles.label}>Modelo:</Text>
+          <Text style={styles.value}>{car.model}</Text>
 
-        <Text style={styles.label}>Versión:</Text>
-        <Text style={styles.value}>{car.version}</Text>
+          <Text style={styles.label}>Versión:</Text>
+          <Text style={styles.value}>{car.version}</Text>
 
-        <Text style={styles.label}>ID del propietario:</Text>
-        <Text style={styles.value}>{car.user_id}</Text>
-      </View>
+          <Text style={styles.label}>ID del propietario:</Text>
+          <Text style={styles.value}>{car.user_id}</Text>
+        </View>
 
-      {car.km_history?.length > 0 && (
-        <>
-          <Text style={styles.chartTitle}>Historial de Kilómetros</Text>
-          <LineChart
-            data={{
-              labels: kmLabels,
-              datasets: [{ data: kmValues }]
-            }}
-            width={screenWidth - 32}
-            height={220}
-            yAxisSuffix=" km"
-            chartConfig={{
-              backgroundColor: '#fff',
-              backgroundGradientFrom: '#f7f7f7',
-              backgroundGradientTo: '#f7f7f7',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              labelColor: () => '#333',
-              style: { borderRadius: 16 },
-              propsForDots: { r: '4', strokeWidth: '1', stroke: '#000' }
-            }}
-            bezier
-            style={styles.chart}
-          />
-        </>
-      )}
-    </ScrollView>
+        {car.km_history?.length > 0 && (
+          <>
+            <Text style={styles.chartTitle}>Historial de Kilómetros</Text>
+            <LineChart
+              data={{
+                labels: kmLabels,
+                datasets: [{ data: kmValues }]
+              }}
+              width={screenWidth - 32}
+              height={220}
+              yAxisSuffix=" km"
+              chartConfig={{
+                backgroundColor: '#fff',
+                backgroundGradientFrom: '#f7f7f7',
+                backgroundGradientTo: '#f7f7f7',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                labelColor: () => '#333',
+                style: { borderRadius: 16 },
+                propsForDots: { r: '4', strokeWidth: '1', stroke: '#000' }
+              }}
+              bezier
+              style={styles.chart}
+            />
+          </>
+        )}
+      </ScrollView>
+    </ScreenWrapper>
   );
 }
 

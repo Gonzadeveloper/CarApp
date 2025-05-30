@@ -26,14 +26,14 @@ export default function SettingsScreen() {
     dni:'',
   });
   
-  useEffect(() => {
+  useEffect(() => {  
     if (user && !loading) {
       setUserData({
-        name: user.data?.name || '',
-        lastName: user.data?.lastName || '',
-        email: user.data?.email || '',
-        dni: user.data?.dni || '',
-        City: user.data.City?.name || '',
+        name: user.name || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        dni: user.dni || '',
+        City: user.City?.name || '',
       });
     }
   }, [user, loading]);
