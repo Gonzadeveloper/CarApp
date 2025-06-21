@@ -100,7 +100,7 @@ Si tenés experiencia en OCR, IA, frontend o seguridad, ¡escribime o hacé un P
 ## 📫 Contacto
 
 > Desarrollado por Gonzalo (Argentina) 🇦🇷  
-> [LinkedIn]([https://www.linkedin.com/](https://www.linkedin.com/in/gonzalo-cayssials-610bb5254/)) • [GitHub]([https://github.com/](https://github.com/Gonzadeveloper))
+> [LinkedIn](https://www.linkedin.com/in/gonzalo-cayssials-610bb5254/) • [GitHub](https://github.com/Gonzadeveloper)
 
 ---
 
