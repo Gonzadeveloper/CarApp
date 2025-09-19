@@ -6,6 +6,7 @@ import {
   Button,
   StyleSheet,
   Alert,
+  TouchableOpacity
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import ScreenWrapper from '../components/ScreenWrapper';
@@ -66,18 +67,39 @@ export default function LoginScreen() {
           secureTextEntry
         />
         <Button title="Ingresar" onPress={handleLogin} />
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={styles.registerLink}>
+            ¿No tienes cuenta? <Text style={styles.registerBold}>Regístrate</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { gap: 10, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  container: { 
+    gap: 10, 
+    padding: 20 
+  },
+  title: { 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    marginBottom: 20 
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 12,
   },
+    registerLink: {
+    marginTop: 15,
+    textAlign: "center",
+    color: "#555",
+  },
+  registerBold: {
+    fontWeight: "bold",
+    color: "#007AFF", 
+  }
 });

@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
         // Si tenemos un accessToken válido, usamos la API para traer el user
         if (accessToken) {
         const response = await api.get('/users/me');
-        const userData = response.data.data; // <-- aquí extraés el user que está dentro de data.data
+        const userData = response.data.data; 
         setUser({
           id: userData.id,
           name: userData.name,

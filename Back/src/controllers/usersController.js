@@ -48,9 +48,22 @@ const refreshToken = async (req, res) => {
 const registerUser = async (req, res) => {
   const { password, email, name, lastName } = req.body;
   try {
+
+    
     const hash = await bcrypt.hash(password, 10);
     const user = await Users.create({ name, lastName, email, password_hash: hash });
-    successResponse(res, 'Usuario registrado correctamente', user, 201);
+    
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+    
+    const data = {
+      id: user.id,
+		  email: user.id,
+      accessToken,
+		  refreshToken
+    }
+
+    successResponse(res, 'Usuario registrado correctamente', data, 201);
   } catch (err) {
     errorResponse(res, 'Error al registrar el usuario', err.message, 400);
   }

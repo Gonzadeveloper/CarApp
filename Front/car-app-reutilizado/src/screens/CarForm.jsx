@@ -177,8 +177,13 @@ const CarForm = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
-  label: { fontWeight: 'bold', marginTop: 12 },
+  container: { 
+    padding: 16, 
+  },
+  label: { 
+    fontWeight: 'bold', 
+    marginTop: 12 
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',

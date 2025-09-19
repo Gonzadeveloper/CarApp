@@ -7,6 +7,7 @@ import CustomDrawerContent from "../components/CustomDrawerContent";
 import CarSearchStack from "./CarSearchStack";
 import { Protected } from '../utils/ProtectedRoute';
 import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen"
 
 const Drawer = createDrawerNavigator();
 
@@ -21,10 +22,31 @@ export default function AppNavigator() {
                 component={LoginScreen}
                 options={{ drawerItemStyle: { display: 'none' } }}
             />
-            <Drawer.Screen name="CarSearchStack" component={CarSearchStack}/>
-            <Drawer.Screen name="CarDetailsStack" component={Protected(CarDetailsStack)}/>
-            <Drawer.Screen name="AddCar" component={Protected(CarForm)}/>
-            <Drawer.Screen name="Settings" component={Protected(SettingsScreen)}/>
+            <Drawer.Screen 
+                name="CarSearchStack" 
+                component={CarSearchStack}
+                options={{ title:"Busqueda por patente"}}
+                />
+            <Drawer.Screen 
+                name="CarDetailsStack" 
+                component={Protected(CarDetailsStack)}
+                options={{title: "Detalles de mis autos"}}
+                />
+            <Drawer.Screen 
+                name="AddCar" 
+                component={Protected(CarForm)}
+                options={{title: "Agregar auto"}}
+                />
+            <Drawer.Screen 
+                name="Settings" 
+                component={Protected(SettingsScreen)}
+                options={{title: "Configuración"}}
+                />
+            <Drawer.Screen
+                name="Register"
+                component={RegisterScreen}
+                options={{title: "Crear usuario"}}
+                />
         </Drawer.Navigator>
     );
 }
